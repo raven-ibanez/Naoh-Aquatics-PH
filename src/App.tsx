@@ -30,8 +30,16 @@ function MainApp() {
     : menuItems.filter(item => item.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-cream-50 font-inter">
-      <Header 
+    <div className="min-h-screen bg-gradient-to-br from-aquatic-bubble via-white to-aquatic-sand font-inter relative overflow-x-hidden">
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-aquatic-teal/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute top-40 right-20 w-96 h-96 bg-aquatic-lime/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-aquatic-coral/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '4s' }}></div>
+      </div>
+      
+      <div className="relative z-10">
+        <Header 
         cartItemsCount={cart.getTotalItems()}
         onCartClick={() => handleViewChange('cart')}
         onMenuClick={() => handleViewChange('menu')}
@@ -73,6 +81,7 @@ function MainApp() {
           onCartClick={() => handleViewChange('cart')}
         />
       )}
+      </div>
     </div>
   );
 }

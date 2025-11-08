@@ -91,13 +91,34 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems, updateQuan
         activeCategory={activeCategory}
         onCategoryClick={handleCategoryClick}
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-noto font-semibold text-black mb-4">Our Menu</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Discover our selection of authentic dim sum, flavorful noodles, and traditional Asian dishes, 
-          all prepared with fresh ingredients and authentic techniques.
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="text-center mb-16 relative">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-aquatic-teal to-transparent rounded-full"></div>
+        
+        <div className="inline-block mb-4">
+          <div className="bg-gradient-to-r from-aquatic-bubble via-aquatic-teal/10 to-aquatic-bubble px-6 py-2 rounded-full border-2 border-aquatic-teal/20">
+            <span className="text-aquatic-teal font-bold text-sm tracking-wider">🌊 EXPLORE OUR COLLECTION</span>
+          </div>
+        </div>
+        
+        <h2 className="text-6xl md:text-7xl font-pretendard font-black mb-6 animate-fade-in">
+          <span className="bg-gradient-to-r from-aquatic-teal via-aquatic-ocean to-aquatic-teal bg-clip-text text-transparent animate-gradient drop-shadow-lg">
+            Premium Aquatic Products
+          </span>
+        </h2>
+        
+        <p className="text-aquatic-charcoal/80 text-xl max-w-3xl mx-auto leading-relaxed font-medium">
+          Discover our comprehensive selection of high-quality fish food, color enhancers, probiotics, 
+          and essential aquarium supplies for healthy and vibrant aquatic life 🐠✨
         </p>
+        
+        {/* Decorative wave */}
+        <div className="mt-8 flex justify-center space-x-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="w-2 h-2 rounded-full bg-aquatic-teal/50 animate-bounce-gentle" style={{ animationDelay: `${i * 0.1}s` }}></div>
+          ))}
+        </div>
       </div>
 
       {categories.map((category) => {
@@ -106,10 +127,23 @@ const Menu: React.FC<MenuProps> = ({ menuItems, addToCart, cartItems, updateQuan
         if (categoryItems.length === 0) return null;
         
         return (
-          <section key={category.id} id={category.id} className="mb-16">
-            <div className="flex items-center mb-8">
-              <span className="text-3xl mr-3">{category.icon}</span>
-              <h3 className="text-3xl font-noto font-medium text-black">{category.name}</h3>
+          <section key={category.id} id={category.id} className="mb-20 animate-fade-in">
+            <div className="relative flex items-center mb-10 pb-6 border-b-2 border-gradient-to-r from-transparent via-aquatic-teal/30 to-transparent">
+              {/* Decorative line */}
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-aquatic-teal to-transparent"></div>
+              
+              <div className="relative">
+                <div className="absolute inset-0 bg-aquatic-teal/20 blur-xl rounded-full animate-pulse-slow"></div>
+                <span className="relative text-5xl mr-6 bg-gradient-to-br from-aquatic-teal via-aquatic-lime to-aquatic-teal p-4 rounded-2xl shadow-aquatic border-2 border-aquatic-teal/30 inline-block transform hover:scale-110 transition-transform duration-300">{category.icon}</span>
+              </div>
+              
+              <div>
+                <h3 className="text-4xl md:text-5xl font-pretendard font-black bg-gradient-to-r from-aquatic-ocean via-aquatic-teal to-aquatic-lime bg-clip-text text-transparent animate-gradient drop-shadow-sm">{category.name}</h3>
+                <div className="flex items-center space-x-2 mt-2">
+                  <div className="w-12 h-1 bg-gradient-to-r from-aquatic-teal to-transparent rounded-full"></div>
+                  <span className="text-xs text-aquatic-teal/60 font-semibold tracking-wider uppercase">Quality Products</span>
+                </div>
+              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
