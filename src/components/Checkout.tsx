@@ -14,14 +14,11 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
   const [step, setStep] = useState<'details' | 'payment'>('details');
   const [customerName, setCustomerName] = useState('');
   const [contactNumber, setContactNumber] = useState('');
-  const [serviceType, setServiceType] = useState<ServiceType>('dine-in');
+  const [serviceType, setServiceType] = useState<ServiceType>('pickup');
   const [address, setAddress] = useState('');
   const [landmark, setLandmark] = useState('');
   const [pickupTime, setPickupTime] = useState('5-10');
   const [customTime, setCustomTime] = useState('');
-  // Dine-in specific state
-  const [partySize, setPartySize] = useState(1);
-  const [dineInTime, setDineInTime] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('gcash');
   const [referenceNumber, setReferenceNumber] = useState('');
   const [notes, setNotes] = useState('');
@@ -48,17 +45,6 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
       ? (pickupTime === 'custom' ? customTime : `${pickupTime} minutes`)
       : '';
     
-    const dineInInfo = serviceType === 'dine-in' 
-      ? `üë• Party Size: ${partySize} person${partySize !== 1 ? 's' : ''}\nüïê Preferred Time: ${new Date(dineInTime).toLocaleString('en-US', { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric', 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        })}`
-      : '';
-    
     const orderDetails = `
 üõí Noah Aquatics PH ORDER
 
@@ -67,7 +53,6 @@ const Checkout: React.FC<CheckoutProps> = ({ cartItems, totalPrice, onBack }) =>
 üìç Service: ${serviceType.charAt(0).toUpperCase() + serviceType.slice(1)}
 ${serviceType === 'delivery' ? `üè† Address: ${address}${landmark ? `\nüó∫Ô∏è Landmark: ${landmark}` : ''}` : ''}
 ${serviceType === 'pickup' ? `‚è∞ Pickup Time: ${timeInfo}` : ''}
-${serviceType === 'dine-in' ? dineInInfo : ''}
 
 
 üìã ORDER DETAILS:
@@ -99,7 +84,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
     `.trim();
 
     const encodedMessage = encodeURIComponent(orderDetails);
-    const messengerUrl = `https://m.me/100653725872789?text=${encodedMessage}`;
+    const messengerUrl = `https://m.me/100088127122566?text=${encodedMessage}`;
     
     window.open(messengerUrl, '_blank');
     
@@ -107,8 +92,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
 
   const isDetailsValid = customerName && contactNumber && 
     (serviceType !== 'delivery' || address) && 
-    (serviceType !== 'pickup' || (pickupTime !== 'custom' || customTime)) &&
-    (serviceType !== 'dine-in' || (partySize > 0 && dineInTime));
+    (serviceType !== 'pickup' || (pickupTime !== 'custom' || customTime));
 
   if (step === 'details') {
     return (
@@ -169,7 +153,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                   type="text"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aquatic-teal focus:border-transparent transition-colors duration-200"
                   placeholder="Enter your full name"
                   required
                 />
@@ -181,7 +165,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                   type="tel"
                   value={contactNumber}
                   onChange={(e) => setContactNumber(e.target.value)}
-                  className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aquatic-teal focus:border-transparent transition-colors duration-200"
                   placeholder="09XX XXX XXXX"
                   required
                 />
@@ -190,9 +174,8 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
               {/* Service Type */}
               <div>
                 <label className="block text-sm font-medium text-black mb-3">Service Type *</label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {[
-                    { value: 'dine-in', label: 'Dine In', icon: 'ü™ë' },
                     { value: 'pickup', label: 'Pickup', icon: 'üö∂' },
                     { value: 'delivery', label: 'Delivery', icon: 'üõµ' }
                   ].map((option) => (
@@ -200,10 +183,10 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                       key={option.value}
                       type="button"
                       onClick={() => setServiceType(option.value as ServiceType)}
-                      className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                      className={`p-4 rounded-lg border-2 transition-colors duration-200 ${
                         serviceType === option.value
-                          ? 'border-red-600 bg-red-600 text-white'
-                          : 'border-red-300 bg-white text-gray-700 hover:border-red-400'
+                          ? 'border-aquatic-teal bg-aquatic-teal text-white'
+                          : 'border-gray-300 bg-white text-gray-700 hover:border-aquatic-teal'
                       }`}
                     >
                       <div className="text-2xl mb-1">{option.icon}</div>
@@ -212,45 +195,6 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                   ))}
                 </div>
               </div>
-
-              {/* Dine-in Details */}
-              {serviceType === 'dine-in' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-black mb-2">Party Size *</label>
-                    <div className="flex items-center space-x-4">
-                      <button
-                        type="button"
-                        onClick={() => setPartySize(Math.max(1, partySize - 1))}
-                        className="w-10 h-10 rounded-lg border-2 border-red-300 flex items-center justify-center text-red-600 hover:border-red-400 hover:bg-red-50 transition-all duration-200"
-                      >
-                        -
-                      </button>
-                      <span className="text-2xl font-semibold text-black min-w-[3rem] text-center">{partySize}</span>
-                      <button
-                        type="button"
-                        onClick={() => setPartySize(Math.min(20, partySize + 1))}
-                        className="w-10 h-10 rounded-lg border-2 border-red-300 flex items-center justify-center text-red-600 hover:border-red-400 hover:bg-red-50 transition-all duration-200"
-                      >
-                        +
-                      </button>
-                      <span className="text-sm text-gray-600 ml-2">person{partySize !== 1 ? 's' : ''}</span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-black mb-2">Preferred Time *</label>
-                    <input
-                      type="datetime-local"
-                      value={dineInTime}
-                      onChange={(e) => setDineInTime(e.target.value)}
-                      className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
-                      required
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Please select your preferred dining time</p>
-                  </div>
-                </>
-              )}
 
               {/* Pickup Time Selection */}
               {serviceType === 'pickup' && (
@@ -285,7 +229,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                         type="text"
                         value={customTime}
                         onChange={(e) => setCustomTime(e.target.value)}
-                        className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aquatic-teal focus:border-transparent transition-colors duration-200"
                         placeholder="e.g., 45 minutes, 1 hour, 2:30 PM"
                         required
                       />
@@ -302,7 +246,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                     <textarea
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aquatic-teal focus:border-transparent transition-colors duration-200"
                       placeholder="Enter your complete delivery address"
                       rows={3}
                       required
@@ -315,7 +259,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                       type="text"
                       value={landmark}
                       onChange={(e) => setLandmark(e.target.value)}
-                      className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aquatic-teal focus:border-transparent transition-colors duration-200"
                       placeholder="e.g., Near McDonald's, Beside 7-Eleven, In front of school"
                     />
                   </div>
@@ -328,7 +272,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-4 py-3 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-aquatic-teal focus:border-transparent transition-colors duration-200"
                   placeholder="Any special requests or notes..."
                   rows={3}
                 />
@@ -337,9 +281,9 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
               <button
                 onClick={handleProceedToPayment}
                 disabled={!isDetailsValid}
-                className={`w-full py-4 rounded-xl font-medium text-lg transition-all duration-200 transform ${
+                className={`w-full py-4 rounded-lg font-medium text-base transition-colors duration-200 ${
                   isDetailsValid
-                    ? 'bg-red-600 text-white hover:bg-red-700 hover:scale-[1.02]'
+                    ? 'bg-aquatic-teal text-white hover:bg-aquatic-teal-dark'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
@@ -377,10 +321,10 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                 key={method.id}
                 type="button"
                 onClick={() => setPaymentMethod(method.id as PaymentMethod)}
-                className={`p-4 rounded-lg border-2 transition-all duration-200 flex items-center space-x-3 ${
+                className={`p-4 rounded-lg border-2 transition-colors duration-200 flex items-center space-x-3 ${
                   paymentMethod === method.id
-                    ? 'border-red-600 bg-red-600 text-white'
-                    : 'border-red-300 bg-white text-gray-700 hover:border-red-400'
+                    ? 'border-aquatic-teal bg-aquatic-teal text-white'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-aquatic-teal'
                 }`}
               >
                 <span className="text-2xl">üí≥</span>
@@ -445,23 +389,6 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
                   Pickup Time: {pickupTime === 'custom' ? customTime : `${pickupTime} minutes`}
                 </p>
               )}
-              {serviceType === 'dine-in' && (
-                <>
-                  <p className="text-sm text-gray-600">
-                    Party Size: {partySize} person{partySize !== 1 ? 's' : ''}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Preferred Time: {dineInTime ? new Date(dineInTime).toLocaleString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric', 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    }) : 'Not selected'}
-                  </p>
-                </>
-              )}
             </div>
 
             {cartItems.map((item) => (
@@ -496,7 +423,7 @@ Please confirm this order to proceed. Thank you for choosing Noah Aquatics PH! 
 
           <button
             onClick={handlePlaceOrder}
-            className="w-full py-4 rounded-xl font-medium text-lg transition-all duration-200 transform bg-red-600 text-white hover:bg-red-700 hover:scale-[1.02]"
+            className="w-full py-4 rounded-lg font-medium text-base transition-colors duration-200 bg-aquatic-teal text-white hover:bg-aquatic-teal-dark"
           >
             Place Order via Messenger
           </button>

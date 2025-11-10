@@ -15,6 +15,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   quantity, 
   onUpdateQuantity 
 }) => {
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [showQuantityModal, setShowQuantityModal] = useState(false);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [showCustomization, setShowCustomization] = useState(false);
@@ -103,17 +104,18 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   return (
     <>
-      <div className={`relative bg-white rounded-3xl shadow-aquatic hover:shadow-aquatic-lg transition-all duration-500 overflow-hidden group animate-scale-in border-2 border-aquatic-teal/30 hover:border-aquatic-teal hover:-translate-y-2 ${!item.available ? 'opacity-60' : ''}`}>
-        {/* Shimmer effect on hover */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent shimmer opacity-0 group-hover:opacity-100 pointer-events-none z-10"></div>
-        
-        {/* Image Container with Badges */}
-        <div className="relative h-56 bg-gradient-to-br from-aquatic-bubble via-white to-aquatic-sand overflow-hidden">
+      {/* Square Product Card */}
+      <div 
+        onClick={() => item.available && setShowDetailModal(true)}
+        className={`relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group cursor-pointer border-2 border-aquatic-teal/30 hover:border-aquatic-teal hover:-translate-y-1 ${!item.available ? 'opacity-60 cursor-not-allowed' : ''}`}
+      >
+        {/* Square Image Container */}
+        <div className="relative w-full aspect-square bg-gradient-to-br from-aquatic-bubble via-white to-aquatic-sand overflow-hidden">
           {item.image ? (
             <img
               src={item.image}
               alt={item.name}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
               loading="lazy"
               decoding="async"
               onError={(e) => {
@@ -122,139 +124,201 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               }}
             />
           ) : null}
-          {/* Background pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-aquatic-teal via-transparent to-transparent"></div>
-          </div>
-
+          
           <div className={`absolute inset-0 flex items-center justify-center ${item.image ? 'hidden' : ''}`}>
-            <div className="text-7xl opacity-30 text-aquatic-teal animate-float">🐠</div>
+            <div className="text-7xl opacity-30 text-aquatic-teal">🐠</div>
           </div>
           
           {/* Badges */}
-          <div className="absolute top-4 left-4 flex flex-col gap-2 z-20">
+          <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
             {item.isOnDiscount && item.discountPrice && (
-              <div className="bg-gradient-to-r from-aquatic-coral to-aquatic-orange text-white text-xs font-bold px-4 py-2 rounded-full shadow-coral animate-pulse backdrop-blur-sm border-2 border-white/50">
-                💰 SALE
+              <div className="bg-gradient-to-r from-aquatic-coral to-aquatic-orange text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                -{Math.round(((item.basePrice - item.discountPrice) / item.basePrice) * 100)}%
               </div>
             )}
             {item.popular && (
-              <div className="bg-gradient-to-r from-aquatic-yellow to-aquatic-orange text-aquatic-charcoal text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm border-2 border-white/50 animate-bounce-gentle">
+              <div className="bg-gradient-to-r from-aquatic-yellow to-aquatic-orange text-aquatic-charcoal text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                 ⭐ POPULAR
               </div>
             )}
           </div>
           
           {!item.available && (
-            <div className="absolute top-4 right-4 bg-gradient-to-r from-gray-500 to-gray-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm border-2 border-white/50">
-              UNAVAILABLE
-            </div>
-          )}
-          
-          {/* Discount Percentage Badge */}
-          {item.isOnDiscount && item.discountPrice && (
-            <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-md text-aquatic-coral text-sm font-black px-4 py-2 rounded-full shadow-coral border-3 border-aquatic-coral animate-pulse">
-              -{Math.round(((item.basePrice - item.discountPrice) / item.basePrice) * 100)}%
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <div className="bg-white text-gray-800 text-sm font-bold px-4 py-2 rounded-full">
+                UNAVAILABLE
+              </div>
             </div>
           )}
         </div>
         
-        {/* Content */}
-        <div className="p-6 bg-gradient-to-br from-white via-aquatic-bubble/10 to-white relative">
-          {/* Decorative corner */}
-          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-aquatic-teal/5 to-transparent rounded-bl-3xl"></div>
+        {/* Product Info - Name and Price Only */}
+        <div className="p-4 bg-white">
+          <h4 className="text-base font-bold text-aquatic-charcoal leading-tight mb-2 line-clamp-2 min-h-[2.5rem] group-hover:text-aquatic-teal transition-colors">
+            {item.name}
+          </h4>
           
-          <div className="flex items-start justify-between mb-3 relative z-10">
-            <h4 className="text-lg font-bold text-aquatic-charcoal leading-tight flex-1 pr-2 group-hover:text-aquatic-teal transition-colors duration-300">{item.name}</h4>
-            {item.variations && item.variations.length > 0 && (
-              <div className="text-xs text-aquatic-teal bg-gradient-to-r from-aquatic-bubble to-aquatic-teal/10 px-3 py-1.5 rounded-full whitespace-nowrap font-bold border-2 border-aquatic-teal/30 shadow-sm">
-                {item.variations.length} sizes
+          <div>
+            {item.isOnDiscount && item.discountPrice ? (
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-aquatic-coral">
+                  ₱{item.discountPrice.toFixed(2)}
+                </span>
+                <span className="text-xs text-gray-500 line-through">
+                  ₱{item.basePrice.toFixed(2)}
+                </span>
               </div>
+            ) : (
+              <span className="text-lg font-bold bg-gradient-to-r from-aquatic-teal to-aquatic-ocean bg-clip-text text-transparent">
+                ₱{item.basePrice.toFixed(2)}
+              </span>
             )}
           </div>
-          
-          <p className={`text-sm mb-4 leading-relaxed ${!item.available ? 'text-gray-400' : 'text-aquatic-charcoal/80'}`}>
-            {!item.available ? 'Currently Unavailable' : item.description}
-          </p>
-          
-          {/* Pricing Section */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex-1">
-              {item.isOnDiscount && item.discountPrice ? (
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-2xl font-bold text-aquatic-coral">
-                      ₱{item.discountPrice.toFixed(2)}
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      ₱{item.basePrice.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="text-xs text-aquatic-teal font-semibold">
-                    💰 Save ₱{(item.basePrice - item.discountPrice).toFixed(2)}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-2xl font-bold bg-gradient-to-r from-aquatic-teal to-aquatic-ocean bg-clip-text text-transparent">
-                  ₱{item.basePrice.toFixed(2)}
-                </div>
-              )}
-              
-              {item.variations && item.variations.length > 0 && (
-                <div className="text-xs text-aquatic-teal/70 mt-1 font-medium">
-                  Starting price
-                </div>
-              )}
-            </div>
-            
-            {/* Action Buttons */}
-            <div className="flex-shrink-0">
-              {!item.available ? (
-                <button
-                  disabled
-                  className="bg-gray-200 text-gray-500 px-4 py-2.5 rounded-xl cursor-not-allowed font-medium text-sm"
-                >
-                  Unavailable
-                </button>
-              ) : quantity === 0 ? (
-                <button
-                  onClick={handleAddToCart}
-                  className="relative overflow-hidden bg-gradient-to-r from-aquatic-teal via-aquatic-teal-dark to-aquatic-teal text-white px-7 py-3 rounded-2xl hover:shadow-aquatic-lg transition-all duration-300 transform hover:scale-110 font-bold text-sm shadow-aquatic border-2 border-aquatic-teal-light/30 group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-aquatic-lime to-aquatic-lime-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <span className="relative z-10 flex items-center space-x-1">
-                    <span>{item.variations?.length || item.addOns?.length ? '⚙️ Customize' : '🛒 Add'}</span>
-                  </span>
-                </button>
-              ) : (
-                <div className="flex items-center space-x-2 bg-gradient-to-r from-aquatic-lime/40 via-aquatic-teal/30 to-aquatic-lime/40 rounded-2xl p-1.5 border-2 border-aquatic-teal shadow-lime">
-                  <button
-                    onClick={handleDecrement}
-                    className="p-2.5 hover:bg-white/80 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95"
-                  >
-                    <Minus className="h-4 w-4 text-aquatic-charcoal" />
-                  </button>
-                  <span className="font-black text-aquatic-charcoal min-w-[32px] text-center text-base bg-white/50 px-2 py-1 rounded-lg">{quantity}</span>
-                  <button
-                    onClick={handleIncrement}
-                    className="p-2.5 hover:bg-white/80 rounded-xl transition-all duration-200 hover:scale-110 active:scale-95"
-                  >
-                    <Plus className="h-4 w-4 text-aquatic-charcoal" />
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Add-ons indicator */}
-          {item.addOns && item.addOns.length > 0 && (
-            <div className="flex items-center space-x-2 text-xs text-aquatic-teal bg-gradient-to-r from-aquatic-bubble to-aquatic-sand px-4 py-2 rounded-xl font-bold border-2 border-aquatic-teal/20 shadow-sm hover:shadow-md transition-shadow duration-300">
-              <span className="text-base">✨</span>
-              <span>{item.addOns.length} add-on{item.addOns.length > 1 ? 's' : ''} available</span>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {showDetailModal && (
+        <div className="fixed inset-0 bg-aquatic-charcoal/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-4 border-aquatic-teal animate-scale-in">
+            {/* Header with Close Button */}
+            <div className="sticky top-0 bg-gradient-to-r from-aquatic-teal to-aquatic-teal-dark p-4 flex items-center justify-between rounded-t-3xl z-10">
+              <h3 className="text-xl font-black text-white">Product Details</h3>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="p-2 hover:bg-aquatic-teal-dark rounded-full transition-colors duration-200 border-2 border-white"
+              >
+                <X className="h-5 w-5 text-white" />
+              </button>
+            </div>
+
+            <div className="p-6 bg-gradient-to-br from-aquatic-bubble/20 to-white">
+              {/* Product Image */}
+              <div className="relative w-full aspect-video bg-gradient-to-br from-aquatic-bubble via-white to-aquatic-sand overflow-hidden rounded-2xl mb-6 border-2 border-aquatic-teal/30">
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-9xl opacity-30 text-aquatic-teal">🐠</div>
+                  </div>
+                )}
+                
+                {/* Badges on detail */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                  {item.isOnDiscount && item.discountPrice && (
+                    <div className="bg-gradient-to-r from-aquatic-coral to-aquatic-orange text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg">
+                      💰 SAVE {Math.round(((item.basePrice - item.discountPrice) / item.basePrice) * 100)}%
+                    </div>
+                  )}
+                  {item.popular && (
+                    <div className="bg-gradient-to-r from-aquatic-yellow to-aquatic-orange text-aquatic-charcoal text-sm font-bold px-4 py-2 rounded-full shadow-lg">
+                      ⭐ POPULAR
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Product Details */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-aquatic-teal/20 mb-6">
+                <h4 className="text-2xl font-bold text-aquatic-charcoal mb-3">{item.name}</h4>
+                <p className="text-base text-aquatic-charcoal/80 mb-4 leading-relaxed">{item.description}</p>
+                
+                {/* Price */}
+                <div className="flex items-center gap-4 mb-4">
+                  {item.isOnDiscount && item.discountPrice ? (
+                    <>
+                      <span className="text-3xl font-black text-aquatic-coral">
+                        ₱{item.discountPrice.toFixed(2)}
+                      </span>
+                      <span className="text-lg text-gray-500 line-through">
+                        ₱{item.basePrice.toFixed(2)}
+                      </span>
+                      <span className="text-sm text-aquatic-teal font-semibold">
+                        Save ₱{(item.basePrice - item.discountPrice).toFixed(2)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-3xl font-black bg-gradient-to-r from-aquatic-teal to-aquatic-ocean bg-clip-text text-transparent">
+                      ₱{item.basePrice.toFixed(2)}
+                    </span>
+                  )}
+                </div>
+
+                {/* Variations indicator */}
+                {item.variations && item.variations.length > 0 && (
+                  <div className="text-sm text-aquatic-teal bg-aquatic-bubble px-3 py-2 rounded-lg inline-block mb-4">
+                    📏 {item.variations.length} size option{item.variations.length > 1 ? 's' : ''} available
+                  </div>
+                )}
+
+                {/* Add-ons indicator */}
+                {item.addOns && item.addOns.length > 0 && (
+                  <div className="text-sm text-aquatic-teal bg-aquatic-bubble px-3 py-2 rounded-lg inline-block ml-2 mb-4">
+                    ✨ {item.addOns.length} add-on{item.addOns.length > 1 ? 's' : ''} available
+                  </div>
+                )}
+              </div>
+
+              {/* Quantity Selector */}
+              <div className="mb-6">
+                <label className="block text-center text-aquatic-charcoal font-bold mb-4 text-lg">
+                  Select Quantity
+                </label>
+                <div className="flex items-center justify-center space-x-4">
+                  <button
+                    onClick={() => setSelectedQuantity(Math.max(1, selectedQuantity - 1))}
+                    className="p-4 bg-gradient-to-br from-aquatic-lime/40 to-aquatic-teal/40 hover:from-aquatic-lime/60 hover:to-aquatic-teal/60 rounded-2xl transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-aquatic-teal shadow-aquatic"
+                  >
+                    <Minus className="h-6 w-6 text-aquatic-charcoal" />
+                  </button>
+                  
+                  <div className="bg-gradient-to-br from-aquatic-bubble to-aquatic-sand rounded-2xl px-12 py-6 border-4 border-aquatic-teal shadow-aquatic">
+                    <span className="text-5xl font-black bg-gradient-to-r from-aquatic-teal to-aquatic-ocean bg-clip-text text-transparent">
+                      {selectedQuantity}
+                    </span>
+                  </div>
+                  
+                  <button
+                    onClick={() => setSelectedQuantity(selectedQuantity + 1)}
+                    className="p-4 bg-gradient-to-br from-aquatic-teal/40 to-aquatic-lime/40 hover:from-aquatic-teal/60 hover:to-aquatic-lime/60 rounded-2xl transition-all duration-200 transform hover:scale-110 active:scale-95 border-2 border-aquatic-teal shadow-aquatic"
+                  >
+                    <Plus className="h-6 w-6 text-aquatic-charcoal" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Total Price */}
+              <div className="bg-gradient-to-r from-aquatic-bubble/30 to-aquatic-sand/30 rounded-2xl p-6 mb-6 border-2 border-aquatic-teal/30">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-bold text-aquatic-charcoal">Total Price:</span>
+                  <span className="text-3xl font-black bg-gradient-to-r from-aquatic-teal to-aquatic-ocean bg-clip-text text-transparent">
+                    ₱{((item.effectivePrice || item.basePrice) * selectedQuantity).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Add to Cart Button */}
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  handleAddToCart();
+                }}
+                className="w-full relative overflow-hidden bg-gradient-to-r from-aquatic-teal via-aquatic-teal-dark to-aquatic-teal text-white py-5 rounded-2xl transition-all duration-300 transform hover:scale-105 font-black text-lg shadow-aquatic-lg flex items-center justify-center space-x-3 border-4 border-white/30 group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-aquatic-lime to-aquatic-lime-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <ShoppingCart className="h-6 w-6 relative z-10" />
+                <span className="relative z-10">
+                  {item.variations?.length || item.addOns?.length ? '⚙️ Continue to Customize' : '🛒 Add to Cart'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Quantity Selector Modal */}
       {showQuantityModal && (

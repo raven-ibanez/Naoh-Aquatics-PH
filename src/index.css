@@ -2,95 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Noah Aquatics Custom Styles */
-/* Aquatic theme color helpers */
-.bg-aquatic-teal { background-color: #00BCD4; }
-.bg-aquatic-lime { background-color: #B8E986; }
-.bg-aquatic-charcoal { background-color: #2C2C2E; }
-.text-aquatic-teal { color: #00BCD4; }
-.text-aquatic-orange { color: #FF9800; }
-.border-aquatic-teal { border-color: #00BCD4; }
-.ring-aquatic-teal { --tw-ring-color: #00BCD4; }
-
-/* Aquatic gradient backgrounds */
-.bg-aquatic-wave {
-  background: linear-gradient(135deg, #00BCD4 0%, #4DD0E1 50%, #B8E986 100%);
-}
-
-.bg-ocean-depth {
-  background: linear-gradient(180deg, #006064 0%, #00BCD4 100%);
-}
-
-/* Glass morphism effect */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Floating animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* Bubble animation */
-@keyframes bubble {
-  0% {
-    transform: translateY(0) scale(0);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100vh) scale(1);
-    opacity: 0;
-  }
-}
-
-.animate-bubble {
-  animation: bubble 8s ease-in infinite;
-}
-
-/* Wave animation */
-@keyframes wave {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(20px); }
-}
-
-.animate-wave {
-  animation: wave 4s ease-in-out infinite;
-}
-
-/* Shimmer effect */
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-}
-
-.shimmer {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
-}
-
-/* Gradient text animation */
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
+/* Noah Aquatics Custom Styles - Minimalist */
 
 /* Hide scrollbar for mobile nav */
 .scrollbar-hide {
@@ -108,12 +20,7 @@ img {
   image-rendering: crisp-edges;
 }
 
-/* Preload critical images */
-.preload-image {
-  content: '';
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
-  width: 1px;
-  height: 1px;
+/* Smooth transitions */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
