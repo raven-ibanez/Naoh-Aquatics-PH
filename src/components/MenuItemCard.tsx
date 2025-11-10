@@ -37,8 +37,10 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   };
 
   const handleAddToCart = () => {
+    // Directly add to cart with quantity of 1, skipping modals
+    onAddToCart(item, 1, selectedVariation, []);
+    setShowDetailModal(false);
     setSelectedQuantity(1);
-    setShowQuantityModal(true);
   };
 
   const handleQuantityConfirm = () => {
@@ -303,17 +305,12 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
               {/* Add to Cart Button */}
               <button
-                onClick={() => {
-                  setShowDetailModal(false);
-                  handleAddToCart();
-                }}
+                onClick={handleAddToCart}
                 className="w-full relative overflow-hidden bg-gradient-to-r from-aquatic-teal via-aquatic-teal-dark to-aquatic-teal text-white py-5 rounded-2xl transition-all duration-300 transform hover:scale-105 font-black text-lg shadow-aquatic-lg flex items-center justify-center space-x-3 border-4 border-white/30 group"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-aquatic-lime to-aquatic-lime-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <ShoppingCart className="h-6 w-6 relative z-10" />
-                <span className="relative z-10">
-                  {item.variations?.length || item.addOns?.length ? '⚙️ Continue to Customize' : '🛒 Add to Cart'}
-                </span>
+                <span className="relative z-10">🛒 Add to Cart</span>
               </button>
             </div>
           </div>
